@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Белый фон -->
+    <solid android:color="@android:color/white" />
+
+    <!-- Красная обводка -->
+    <stroke
+        android:color="@color/red"
+        android:width="5dp" /> <!-- Ширина обводки, уменьшена для теста -->
+
+    <!-- Скругленные углы -->
+    <corners android:radius="16dp" /> <!-- Более умеренный радиус для лучшего отображения -->
+</shape>
