@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cameraManager: CameraXManager
     private lateinit var cameraExecutor: ExecutorService
     private var isShooting = false  // Для отслеживания состояния съёмки
+    private var permissionRequestAttempted = false // для отслеживания попытки запроса
 
     private lateinit var startShootingUseCase: StartShootingUseCase
     private lateinit var stopShootingUseCase: StopShootingUseCase
@@ -73,14 +74,17 @@ class MainActivity : AppCompatActivity() {
         cameraExecutor = Executors.newSingleThreadExecutor()
         cameraManager = CameraXManager(this)
 
-        // Проверяем разрешение на использование камеры
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            // Разрешение есть, запускаем камеру
-            startCamera()
-        } else {
-            // Если разрешения нет, запрашиваем его у пользователя
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
-        }
+//        // Проверяем разрешение на использование камеры
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+//            // Разрешение есть, запускаем камеру
+//            startCamera()
+//        } else {
+//            // Если разрешения нет, запрашиваем его у пользователя
+//            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
+//        }
+
+
+        checkCameraPermission()
 
         // Инициализация зависимостей
         startShootingUseCase = StartShootingUseCase(cameraManager, cameraExecutor)
@@ -109,6 +113,88 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
+        private fun checkCameraPermission() {
+        when {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_GRANTED -> {
+                // Разрешение уже есть
+                startCamera()
+            }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) -> {
+                // Пользователь уже отклонял — показываем объяснение и запрашиваем снова
+                showRationaleAndRequest()
+            }
+
+            else -> {
+                // Либо первый запуск, либо навсегда отказано
+                if (!permissionRequestAttempted) {
+                    // Первый запуск — запрашиваем
+                    permissionRequestAttempted = true
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.CAMERA),
+                        CAMERA_PERMISSION_REQUEST_CODE
+                    )
+                } else {
+                    // Навсегда отказано — ведём в настройки
+                    showSettingsDialog()
+                }
+            }
+        }
+    }
+
+    private fun showRationaleAndRequest() {
+        AlertDialog.Builder(this)
+            .setTitle("Нужен доступ к камере")
+            .setMessage("Приложению требуется камера, чтобы снимать и генерировать PDF.")
+            .setPositiveButton("Разрешить") { _, _ ->
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.CAMERA),
+                    CAMERA_PERMISSION_REQUEST_CODE
+                )
+            }
+            .setNegativeButton("Выход") { _, _ -> finishAffinity() }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun showSettingsDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Разрешение на использование камеры навсегда запрещено")
+            .setMessage("Чтобы продолжить, зайдите в настройки приложения и включите разрешение на камеру.")
+            .setPositiveButton("Настройки") { _, _ ->
+                val intent = Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.fromParts("package", packageName, null)
+                )
+                startActivity(intent)
+                // Можно также finishAffinity(), если хотите сразу закрыть
+            }
+            .setNegativeButton("Выход") { _, _ -> finishAffinity() }
+            .setCancelable(false)
+            .show()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
+                startCamera()
+            } else {
+                // Показать rationale или перейти в настройки
+                checkCameraPermission()
+            }
+        }
+    }
+
 
     // Запуск камеры и отображение превью
     private fun startCamera() {

@@ -1,5 +1,5 @@
 {
-  "installationFolder": "C:\\Kotlin\\BS\\OpenCV\\build\\intermediates\\prefab_package\\release\\prefab",
+  "installationFolder": "C:\\Users\\Marina\\Documents\\GitHub\\BoardScannerApp\\BS\\OpenCV\\build\\intermediates\\prefab_package\\release\\prefab",
   "gradlePath": ":OpenCV",
   "packageInfo": {
     "packageName": "OpenCV",
@@ -8,7 +8,7 @@
     "modules": [
       {
         "moduleName": "opencv_jni_shared",
-        "moduleHeaders": "C:\\Kotlin\\BS\\OpenCV\\native\\jni\\include",
+        "moduleHeaders": "C:\\Users\\Marina\\Documents\\GitHub\\BoardScannerApp\\BS\\OpenCV\\native\\jni\\include",
         "moduleExportLibraries": [],
         "abis": []
       }
