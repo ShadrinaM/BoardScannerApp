@@ -111,25 +111,32 @@ class PdfGenerator(private val context: Context){
                 val bitmap = try {
                     context.contentResolver.openInputStream(imageUri)?.use { stream ->
                         BitmapFactory.decodeStream(stream)?.let { originalBitmap ->
-                            // Выравнивание доски перед обработкой
+//                            // Выравнивание доски перед обработкой
+//                            val alignedBitmap = alignBoard(originalBitmap)
+//
+//                            // Поворачиваем изображение на 90 градусов вправо
+//                            val matrix = Matrix()
+//                            matrix.postRotate(90f)
+//                            val rotatedBitmap = Bitmap.createBitmap(
+//                                alignedBitmap,  // Используем выровненное изображение
+//                                0, 0,
+//                                alignedBitmap.width,
+//                                alignedBitmap.height,
+//                                matrix,
+//                                true
+//                            )
+//                            // Масштабируем после поворота
+//                            val maxWidth = 1000
+//                            val scale = maxWidth.toFloat() / rotatedBitmap.width
+//                            val height = (rotatedBitmap.height * scale).toInt()
+//                            Bitmap.createScaledBitmap(rotatedBitmap, maxWidth, height, true)
+
                             val alignedBitmap = alignBoard(originalBitmap)
 
-                            // Поворачиваем изображение на 90 градусов вправо
-                            val matrix = Matrix()
-                            matrix.postRotate(90f)
-                            val rotatedBitmap = Bitmap.createBitmap(
-                                alignedBitmap,  // Используем выровненное изображение
-                                0, 0,
-                                alignedBitmap.width,
-                                alignedBitmap.height,
-                                matrix,
-                                true
-                            )
-                            // Масштабируем после поворота
                             val maxWidth = 1000
-                            val scale = maxWidth.toFloat() / rotatedBitmap.width
-                            val height = (rotatedBitmap.height * scale).toInt()
-                            Bitmap.createScaledBitmap(rotatedBitmap, maxWidth, height, true)
+                            val scale = maxWidth.toFloat() / alignedBitmap.width
+                            val height = (alignedBitmap.height * scale).toInt()
+                            Bitmap.createScaledBitmap(alignedBitmap, maxWidth, height, true)
                         }
                     }
                 } catch (e: Exception) {
@@ -240,10 +247,16 @@ class PdfGenerator(private val context: Context){
             val approx = MatOfPoint2f()
             Imgproc.approxPolyDP(contour2f, approx, 0.02 * Imgproc.arcLength(contour2f, true), true)
             // Проверяем, что контур четырёхвершинный и с максимальной площадью
-            if (approx.total() == 4L && area > maxArea) {
+/*            if (approx.total() == 4L && area > maxArea) {
+                maxArea = area
+                boardContour = approx
+            }*/
+            // Вместо area > maxArea
+            if (approx.total() == 4L && area > maxArea && area > srcMat.width() * srcMat.height() * 0.2) {
                 maxArea = area
                 boardContour = approx
             }
+
         }
 
         if (boardContour == null) {
