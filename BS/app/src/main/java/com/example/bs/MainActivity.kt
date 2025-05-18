@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         startStopButton = findViewById(R.id.startStopButton)
         intervalSpinner = findViewById(R.id.intervalSpinner)
 
+        /*
         // Проверка подключения OpenCV
         if (OpenCVLoader.initLocal()) {
             Log.i(TAG, "OpenCV loaded successfully");
@@ -56,8 +57,12 @@ class MainActivity : AppCompatActivity() {
             Log.e(TAG, "OpenCV initialization failed!");
             (Toast.makeText(this, "OpenCV initialization failed!", Toast.LENGTH_LONG)).show();
             return;
-        }
+        }*/
 
+        // Проверка подключения OpenCV
+        if (!checkOpenCVInitialization()) return
+
+        /*
         // Инициализация Spinner
         val spinner: Spinner = findViewById(R.id.intervalSpinner)
         // Создание адаптера для Spinner
@@ -68,37 +73,51 @@ class MainActivity : AppCompatActivity() {
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // Устанавливаем адаптер в Spinner
-        spinner.adapter = adapter
+        spinner.adapter = adapter*/
 
+        setupIntervalSpinner()
+
+        /*
         // Инициализация камеры и обработчик
         cameraExecutor = Executors.newSingleThreadExecutor()
-        cameraManager = CameraXManager(this)
+        cameraManager = CameraXManager(this)*/
 
-//        // СТАРАЯ ВЕРСИЯ ПРОВЕРКА РАЗРЕШЕНИЯ
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-//            // Разрешение есть, запускаем камеру
-//            startCamera()
-//        } else {
-//            // Если разрешения нет, запрашиваем его у пользователя
-//            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
-//        }
+        // Инициализация CameraX
+        setupCamera()
 
+        /*
+        // СТАРАЯ ВЕРСИЯ ПРОВЕРКА РАЗРЕШЕНИЯ
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            // Разрешение есть, запускаем камеру
+            startCamera()
+        } else {
+            // Если разрешения нет, запрашиваем его у пользователя
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
+        }*/
 
+        // Проверка разрешений
         checkCameraPermission()
 
-        // Инициализация зависимостей
+        /*        // Инициализация зависимостей
         startShootingUseCase = StartShootingUseCase(cameraManager, cameraExecutor)
         stopShootingUseCase = StopShootingUseCase(startShootingUseCase)
-
         val pdfGenerator = PdfGenerator(this) // в Activity
-        generatePdfUseCase = GeneratePdfUseCase(pdfGenerator)
+        generatePdfUseCase = GeneratePdfUseCase(pdfGenerator)*/
+
+        // Инициализация UseCases
+        setupUseCases()
 
 
+
+        /*
+        // Инициализация ViewModel
         // Создаём фабрику для ViewModel
         val factory = CameraViewModelFactory(startShootingUseCase, stopShootingUseCase, generatePdfUseCase)
-
         // Получаем ViewModel с фабрикой
-        cameraViewModel = ViewModelProvider(this, factory).get(CameraViewModel::class.java)
+        cameraViewModel = ViewModelProvider(this, factory).get(CameraViewModel::class.java)*/
+
+        // Инициализация ViewModel
+        setupViewModel()
 
         // Запуск камеры
         startCamera()
@@ -114,7 +133,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //проверяет разрешение
+    // Проверка OpenCV
+    private fun checkOpenCVInitialization(): Boolean {
+        return if (OpenCVLoader.initLocal()) {
+            Log.i(TAG, "OpenCV loaded successfully")
+            true
+        } else {
+            Log.e(TAG, "OpenCV initialization failed!")
+            (Toast.makeText(this, "OpenCV initialization failed!", Toast.LENGTH_LONG)).show();
+            false
+        }
+    }
+
+    // Инициализация Спинера
+    private fun setupIntervalSpinner() {
+        val spinner: Spinner = findViewById(R.id.intervalSpinner)
+        val adapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.interval_array,
+            android.R.layout.simple_spinner_item
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+    }
+
+    // Инициализация CameraX
+    private fun setupCamera() {
+        cameraExecutor = Executors.newSingleThreadExecutor()
+        cameraManager = CameraXManager(this)
+    }
+
+    // Проверка наличия разрешения
     private fun checkCameraPermission() {
     when {
         ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -145,7 +194,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-    // объяснение того, что разрешение необходимо, если пользователь впервый раз отказался
+    // Объяснение того, что разрешение необходимо, если пользователь впервый раз отказался
     private fun showRationaleAndRequest() {
         AlertDialog.Builder(this)
             .setTitle("Нужен доступ к камере")
@@ -197,6 +246,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Инициализация UseCases
+    private fun setupUseCases() {
+        startShootingUseCase = StartShootingUseCase(cameraManager, cameraExecutor)
+        stopShootingUseCase = StopShootingUseCase(startShootingUseCase)
+        generatePdfUseCase = GeneratePdfUseCase(PdfGenerator(this))
+    }
+
+    // Инициализация ViewModel
+    private fun setupViewModel() {
+        val factory = CameraViewModelFactory(startShootingUseCase, stopShootingUseCase, generatePdfUseCase)
+        cameraViewModel = ViewModelProvider(this, factory).get(CameraViewModel::class.java)
+    }
 
     // Запуск камеры и отображение превью
     private fun startCamera() {
