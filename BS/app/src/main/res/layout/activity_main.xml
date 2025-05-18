@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!-- Превью камеры -->
+    &lt;!&ndash; Превью камеры &ndash;&gt;
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    <!-- Чёрная панель в верхней части экрана -->
+    &lt;!&ndash; Чёрная панель в верхней части экрана &ndash;&gt;
     <LinearLayout
         android:id="@+id/topPanel"
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
         android:gravity="center_vertical|end"
         android:orientation="horizontal"
         android:padding="16dp">
-        <!-- Надпись "Интервал" слева от Spinner -->
+        &lt;!&ndash; Надпись "Интервал" слева от Spinner &ndash;&gt;
         <TextView
             android:id="@+id/intervalLabel"
             android:layout_width="wrap_content"
@@ -24,14 +24,130 @@
             android:text="Интервал"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
-        <!-- Меню для выбора интервала съёмки -->
+        &lt;!&ndash; Меню для выбора интервала съёмки &ndash;&gt;
         <Spinner
             android:id="@+id/intervalSpinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp" />
     </LinearLayout>
-    <!-- Кнопка старта/остановки -->
+    &lt;!&ndash; Кнопка старта/остановки &ndash;&gt;
+    <Button
+        android:id="@+id/startStopButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/white"
+        android:text="Start"
+        android:textColor="@color/black" />
+</RelativeLayout>-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Превью камеры с фиксированным соотношением сторон -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/startStopButton"
+        android:layout_below="@id/topPanel"
+        android:adjustViewBounds="true" />
+
+<!--    <ProgressBar-->
+<!--        android:id="@+id/pdfProgressBar"-->
+<!--        style="?android:attr/progressBarStyleLarge"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:indeterminate="true"-->
+<!--        android:indeterminateTint="@color/blue"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_centerInParent="true" />-->
+
+<!--    &lt;!&ndash; ProgressBar с текстом (центрируется) &ndash;&gt;
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:id="@+id/pdfProgressContainer">
+
+        &lt;!&ndash; ProgressBar (синий и медленный) &ndash;&gt;
+        <ProgressBar
+            android:id="@+id/pdfProgressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/blue"
+            android:layout_gravity="center_horizontal" />
+
+        &lt;!&ndash; Текст под ProgressBar &ndash;&gt;
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Генерация PDF..."
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>-->
+
+    <LinearLayout
+        android:id="@+id/pdfProgressContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:background="@drawable/bg_toast_style"
+        android:padding="24dp">
+
+        <!-- ProgressBar -->
+        <ProgressBar
+            android:id="@+id/pdfProgressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/blue"
+            android:layout_gravity="center_horizontal" />
+
+        <!-- Текст -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Генерация PDF..."
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+    <!-- Остальные элементы остаются без изменений -->
+    <LinearLayout
+        android:id="@+id/topPanel"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@android:color/black"
+        android:gravity="center_vertical|end"
+        android:orientation="horizontal"
+        android:padding="16dp">
+        <TextView
+            android:id="@+id/intervalLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Интервал"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+        <Spinner
+            android:id="@+id/intervalSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/startStopButton"
         android:layout_width="wrap_content"

@@ -19,9 +19,13 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.camera.view.PreviewView
 import org.opencv.android.NativeCameraView.TAG
 import org.opencv.android.OpenCVLoader
 
@@ -37,19 +41,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var startShootingUseCase: StartShootingUseCase
     private lateinit var stopShootingUseCase: StopShootingUseCase
     private lateinit var generatePdfUseCase: GeneratePdfUseCase
+    private lateinit var previewView: PreviewView
 
     companion object {
         const val CAMERA_PERMISSION_REQUEST_CODE = 101
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    /*override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         startStopButton = findViewById(R.id.startStopButton)
         intervalSpinner = findViewById(R.id.intervalSpinner)
 
-        /*
+        *//*
         // Проверка подключения OpenCV
         if (OpenCVLoader.initLocal()) {
             Log.i(TAG, "OpenCV loaded successfully");
@@ -57,12 +62,12 @@ class MainActivity : AppCompatActivity() {
             Log.e(TAG, "OpenCV initialization failed!");
             (Toast.makeText(this, "OpenCV initialization failed!", Toast.LENGTH_LONG)).show();
             return;
-        }*/
+        }*//*
 
         // Проверка подключения OpenCV
         if (!checkOpenCVInitialization()) return
 
-        /*
+        *//*
         // Инициализация Spinner
         val spinner: Spinner = findViewById(R.id.intervalSpinner)
         // Создание адаптера для Spinner
@@ -73,19 +78,19 @@ class MainActivity : AppCompatActivity() {
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // Устанавливаем адаптер в Spinner
-        spinner.adapter = adapter*/
+        spinner.adapter = adapter*//*
 
         setupIntervalSpinner()
 
-        /*
+        *//*
         // Инициализация камеры и обработчик
         cameraExecutor = Executors.newSingleThreadExecutor()
-        cameraManager = CameraXManager(this)*/
+        cameraManager = CameraXManager(this)*//*
 
         // Инициализация CameraX
         setupCamera()
 
-        /*
+        *//*
         // СТАРАЯ ВЕРСИЯ ПРОВЕРКА РАЗРЕШЕНИЯ
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             // Разрешение есть, запускаем камеру
@@ -93,34 +98,66 @@ class MainActivity : AppCompatActivity() {
         } else {
             // Если разрешения нет, запрашиваем его у пользователя
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
-        }*/
+        }*//*
 
         // Проверка разрешений
         checkCameraPermission()
 
-        /*        // Инициализация зависимостей
+        *//*        // Инициализация зависимостей
         startShootingUseCase = StartShootingUseCase(cameraManager, cameraExecutor)
         stopShootingUseCase = StopShootingUseCase(startShootingUseCase)
         val pdfGenerator = PdfGenerator(this) // в Activity
-        generatePdfUseCase = GeneratePdfUseCase(pdfGenerator)*/
+        generatePdfUseCase = GeneratePdfUseCase(pdfGenerator)*//*
 
         // Инициализация UseCases
         setupUseCases()
 
 
 
-        /*
+        *//*
         // Инициализация ViewModel
         // Создаём фабрику для ViewModel
         val factory = CameraViewModelFactory(startShootingUseCase, stopShootingUseCase, generatePdfUseCase)
         // Получаем ViewModel с фабрикой
-        cameraViewModel = ViewModelProvider(this, factory).get(CameraViewModel::class.java)*/
+        cameraViewModel = ViewModelProvider(this, factory).get(CameraViewModel::class.java)*//*
 
         // Инициализация ViewModel
         setupViewModel()
 
         // Запуск камеры
         startCamera()
+
+        // Обработчик кнопки старт/стоп съёмки
+        startStopButton.setOnClickListener {
+            if (isShooting) {
+                stopShooting()
+                requestPdf()
+            } else {
+                startShooting()
+            }
+        }
+    }*/
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // Инициализация View элементов
+        startStopButton = findViewById(R.id.startStopButton)
+        intervalSpinner = findViewById(R.id.intervalSpinner)
+        previewView = findViewById(R.id.previewView)
+
+        // Проверка подключения OpenCV
+        if (!checkOpenCVInitialization()) {
+            finish()
+            return
+        }
+
+        setupIntervalSpinner()
+        setupCamera()
+        checkCameraPermission()
+        setupUseCases()
+        setupViewModel()
 
         // Обработчик кнопки старт/стоп съёмки
         startStopButton.setOnClickListener {
@@ -298,8 +335,16 @@ class MainActivity : AppCompatActivity() {
 
     // Генерация PDF
     private fun requestPdf() {
+
+        val progressContainer = findViewById<LinearLayout>(R.id.pdfProgressContainer)
+
+        // Показать ProgressBar с текстом
+        progressContainer.visibility = View.VISIBLE
+
         cameraViewModel.generatePDF(this) { pdfUri ->
             pdfUri?.let {
+                // Скрыть ProgressBar с текстом
+                progressContainer.visibility = View.GONE
                 Toast.makeText(this, "PDF saved: ${getPathFromUri(it)}", Toast.LENGTH_LONG).show()
             } ?: run {
                 Toast.makeText(this, "Failed to generate PDF", Toast.LENGTH_LONG).show()

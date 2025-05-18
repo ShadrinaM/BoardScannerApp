@@ -18,66 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
 class PdfGenerator(private val context: Context){
-//    fun generatePdf(images: List<Uri>, context: Context): Uri? {
-//        if (images.isEmpty()) {
-//            Log.e("PdfGenerator", "No images to generate PDF")
-//            return null
-//        }
-//
-//        val bordScanDir = getOrCreateBordScanDir()
-//        val pdfFile = File(bordScanDir, "lecture_${getFormattedDateTime()}.pdf")
-//
-//        return try {
-//            val document = Document()
-//            val writer = PdfWriter.getInstance(document, FileOutputStream(pdfFile))
-//            document.open()
-//
-//            for (imageUri in images) {
-//                val bitmap = try {
-//                    context.contentResolver.openInputStream(imageUri)?.use { stream ->
-//                        BitmapFactory.decodeStream(stream)
-//                    }?.let { originalBitmap ->
-//                        // Масштабируем изображение для уменьшения размера PDF
-//                        val maxWidth = 1000
-//                        val scale = maxWidth.toFloat() / originalBitmap.width
-//                        val height = (originalBitmap.height * scale).toInt()
-//                        Bitmap.createScaledBitmap(originalBitmap, maxWidth, height, true)
-//                    }
-//                } catch (e: Exception) {
-//                    Log.e("PdfGenerator", "Error loading image: $imageUri", e)
-//                    continue
-//                }
-//
-//                bitmap?.let {
-//                    try {
-//                        document.setPageSize(com.itextpdf.text.Rectangle(it.width.toFloat(), it.height.toFloat()))
-//                        document.newPage()
-//
-//                        val stream = ByteArrayOutputStream()
-//                        it.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-//                        val image = Image.getInstance(stream.toByteArray())
-//                        image.setAbsolutePosition(0f, 0f)
-//                        document.add(image)
-//                    } catch (e: Exception) {
-//                        Log.e("PdfGenerator", "Error adding image to PDF", e)
-//                    }
-//                }
-//            }
-//
-//            document.close()
-//            writer.close()
-//
-//            Log.d("PdfGenerator", "PDF successfully generated at: ${pdfFile.absolutePath}")
-//            cleanPictures()
-//            Uri.fromFile(pdfFile)
-//        } catch (e: Exception) {
-//            Log.e("PdfGenerator", "Error generating PDF", e)
-//            null
-//        }
-//    }
-
 
     fun generatePdf(images: List<Uri>, context: Context): Uri? {
         if (images.isEmpty()) {
@@ -122,7 +63,6 @@ class PdfGenerator(private val context: Context){
 
                 bitmap?.let {
                     try {
-                        // Учитываем, что после поворота ширина и высота поменялись местами
                         document.setPageSize(com.itextpdf.text.Rectangle(it.width.toFloat(), it.height.toFloat()))
                         document.newPage()
 
