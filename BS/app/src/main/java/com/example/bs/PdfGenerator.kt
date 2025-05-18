@@ -123,7 +123,7 @@ class PdfGenerator(private val context: Context){
                 bitmap?.let {
                     try {
                         // Учитываем, что после поворота ширина и высота поменялись местами
-                        document.setPageSize(com.itextpdf.text.Rectangle(it.height.toFloat(), it.width.toFloat()))
+                        document.setPageSize(com.itextpdf.text.Rectangle(it.width.toFloat(), it.height.toFloat()))
                         document.newPage()
 
                         val stream = ByteArrayOutputStream()
@@ -149,11 +149,13 @@ class PdfGenerator(private val context: Context){
         }
     }
 
+    // Получение текущей даты в нужном формате
     private fun getFormattedDateTime(): String {
-        return SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault()) // Заменили : на -
+        return SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault())
             .format(Date())
     }
 
+    // Создание или получение директории BordScan
     private fun getOrCreateBordScanDir(): File {
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val bordScanDir = File(downloadsDir, "BordScan")
@@ -163,6 +165,7 @@ class PdfGenerator(private val context: Context){
         return bordScanDir
     }
 
+    // Очищение директории
     private fun cleanPictures() {
         val picturesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         picturesDir?.listFiles()?.forEach {
