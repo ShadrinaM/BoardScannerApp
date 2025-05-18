@@ -8,7 +8,6 @@ class CameraViewModelFactory(
     private val stopShootingUseCase: StopShootingUseCase,
     private val generatePdfUseCase: GeneratePdfUseCase
 ) : ViewModelProvider.Factory {
-
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CameraViewModel::class.java)) {
             return CameraViewModel(

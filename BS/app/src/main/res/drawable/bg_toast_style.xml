@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- res/drawable/bg_toast_style.xml -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/dark_gray" />  <!-- Полупрозрачный тёмно-серый (как Toast) -->
-    <corners android:radius="8dp" />     <!-- Скруглённые углы -->
+    <solid android:color="@color/dark_gray" />
+    <corners android:radius="8dp" />
 </shape>

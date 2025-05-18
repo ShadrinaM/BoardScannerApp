@@ -4,6 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0033</color>
     <color name="blue">#2196F3</color>
-    <color name="dark_gray">#5f5e61</color>
-    <color name="dark_gray_translucent">#CC1e1f22</color>
+    <color name="dark_gray">#B35f5e61</color>
 </resources>

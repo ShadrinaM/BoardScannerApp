@@ -55,45 +55,6 @@
         android:layout_below="@id/topPanel"
         android:adjustViewBounds="true" />
 
-<!--    <ProgressBar-->
-<!--        android:id="@+id/pdfProgressBar"-->
-<!--        style="?android:attr/progressBarStyleLarge"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:indeterminate="true"-->
-<!--        android:indeterminateTint="@color/blue"-->
-<!--        android:visibility="gone"-->
-<!--        android:layout_centerInParent="true" />-->
-
-<!--    &lt;!&ndash; ProgressBar с текстом (центрируется) &ndash;&gt;
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        android:id="@+id/pdfProgressContainer">
-
-        &lt;!&ndash; ProgressBar (синий и медленный) &ndash;&gt;
-        <ProgressBar
-            android:id="@+id/pdfProgressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/blue"
-            android:layout_gravity="center_horizontal" />
-
-        &lt;!&ndash; Текст под ProgressBar &ndash;&gt;
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Генерация PDF..."
-            android:textColor="@android:color/white"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center_horizontal" />
-    </LinearLayout>-->
-
     <LinearLayout
         android:id="@+id/pdfProgressContainer"
         android:layout_width="wrap_content"
@@ -104,7 +65,6 @@
         android:background="@drawable/bg_toast_style"
         android:padding="24dp">
 
-        <!-- ProgressBar -->
         <ProgressBar
             android:id="@+id/pdfProgressBar"
             style="?android:attr/progressBarStyleLarge"
@@ -114,7 +74,6 @@
             android:indeterminateTint="@color/blue"
             android:layout_gravity="center_horizontal" />
 
-        <!-- Текст -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -125,7 +84,6 @@
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
 
-    <!-- Остальные элементы остаются без изменений -->
     <LinearLayout
         android:id="@+id/topPanel"
         android:layout_width="match_parent"
